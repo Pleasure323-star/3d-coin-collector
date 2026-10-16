@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore a small 3D arena and collect every coin.">
+  <meta name="theme-color" content="#101b2d">
+  <title>3D Coin Collector</title>
+  <link rel="stylesheet" href="./style.css">
+  <script id="threejs-cdn" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer onerror="this.dataset.loadError = 'true'"></script>
+  <script src="./game.js" defer></script>
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">A tiny 3D adventure</p>
+        <h1>3D Coin Collector</h1>
+        <p class="intro">Explore the arena, gather every coin, and make it to the finish.</p>
+      </div>
+      <div class="header-actions">
+        <div id="identity-panel" class="identity-panel" aria-live="polite">
+          <span id="identity-status" class="identity-status">Local preview</span>
+          <strong id="identity-name" class="identity-name">Explorer</strong>
+          <span id="identity-account" class="identity-account">Start.ng character loads on *.start.ng</span>
+          <button id="identity-sign-in" class="identity-sign-in" type="button" hidden>Sign in with start.ng</button>
+        </div>
+        <button id="restart-button" class="restart-button" type="button">Restart game</button>
+      </div>
+    </header>
+
+    <section class="game-panel" aria-label="Coin collection game">
+      <div class="game-toolbar" aria-live="polite">
+        <div class="stat-card">
+          <span class="stat-label">Score</span>
+          <strong id="score">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Coins left</span>
+          <strong id="coins-remaining">8</strong>
+        </div>
+        <p id="game-status" class="game-status" role="status">Collect every coin to finish!</p>
+      </div>
+
+      <div id="game-container" class="game-container" aria-label="3D game arena">
+        <p id="loading-message" class="loading-message" role="alert">Loading the 3D arena…</p>
+      </div>
+
+      <div class="game-footer">
+        <div>
+          <h2>How to play</h2>
+          <p>Move with <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or the arrow keys. Walk into a coin to collect it.</p>
+        </div>
+        <span class="desktop-note">Tip: use a keyboard to explore</span>
+      </div>
+    </section>
+
+    <dialog id="completion-modal" class="completion-modal" aria-labelledby="completion-title" aria-describedby="completion-message">
+      <button id="completion-close" class="completion-close" type="button" aria-label="Close completion popup">×</button>
+      <div class="completion-mark" aria-hidden="true">✓</div>
+      <p class="completion-eyebrow">Arena cleared</p>
+      <h2 id="completion-title">You collected every coin!</h2>
+      <p id="completion-message" class="completion-message">Great exploring. You found all eight coins.</p>
+      <p class="final-score">Final score <strong id="final-score">8</strong> <span>/ 8</span></p>
+      <button id="play-again-button" class="play-again-button" type="button">Play again</button>
+    </dialog>
+
+    <footer class="page-footer">Collect all 8 coins to complete your run.</footer>
+  </main>
+</body>
+</html>
