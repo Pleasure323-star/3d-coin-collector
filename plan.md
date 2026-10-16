@@ -24,7 +24,7 @@ Build a simple 3D coin collection browser game for an individual assignment, the
 - The published project must be in a public GitHub repository. Do not include secrets.
 - File limits: at most 2,000 files, 100 MB total, and 25 MB per file. Hidden files/folders, `node_modules`, and links are excluded. Unsupported file types are skipped.
 - Every game must identify the start.ng player. The connect page uses `postMessage` with origin validation; alternatively, the HTTP API requires a start.ng game session. This project uses the documented connect page method.
-- Every game must show the player's start.ng character. This game maps the documented `style` fields (body, clothing colors, skin and hair colors, hairstyle, hat, and accessory) onto a procedural low-poly 3D character, with sensible fallbacks for missing or unknown fields. The documentation provides these appearance settings and a face image, not a downloadable 3D model. The game therefore adapts the settings into its own recognizable model; it cannot reproduce start.ng's exact avatar mesh or artwork. The schema does not specify a skirt/trouser choice, so the game uses trousers for both body presentations.
+- Every game must show the player's start.ng character. This game maps the documented `style` fields (body, clothing colors, skin and hair colors, hairstyle, hat, and accessory) onto a procedural low-poly 3D humanoid, with sensible fallbacks for missing or unknown fields. The identity reply documents `face` as a PNG data URL for profile cards; it does not document a GLB/GLTF asset, model URL, or avatar-rendering API. This project therefore builds its own recognizable character from `style`; it cannot reproduce the exact start.ng avatar mesh or artwork. The schema does not specify a skirt/trouser choice, so the game uses trousers for both body presentations.
 - Guests use the `guest` appearance returned by start.ng and must have a sign-in option. Refresh identity when the tab becomes visible or focused.
 - The connect page at `https://start.ng/connect` only answers games served from a `*.start.ng` address. Local runs therefore show a clearly labeled local preview and cannot verify start.ng identity.
 - Leaderboards are optional. This game will not add a leaderboard or custom stats schema.
@@ -42,15 +42,13 @@ Build a simple 3D coin collection browser game for an individual assignment, the
 
 - Core game implemented and reported tested successfully in Chrome: keyboard movement, coin collection, score, completion, restart, and responsive rendering.
 - start.ng identity integration implemented using the documented hidden iframe and `startng:whoami` message. Message replies are checked against both `https://start.ng` origin and the connect iframe's `contentWindow`, and must match the requested reply type and request ID.
-- Signed-in player and guest styles are mapped onto a more detailed in-game character with distinct body presentation proportions, visible skin-tone hands/face, colored clothing, and differentiated documented hairstyles. Guests see a sign-in button using the documented return URL format.
+- Signed-in player and guest styles are mapped onto an anatomically layered low-poly humanoid with a shaped torso, neck, head, facial features, articulated-looking arms and hands, legs and hair. The documented colors, body presentation, hairstyle, hat, and accessory drive that model. Guests see a sign-in button using the documented return URL format.
 - Appearance still uses an original low-poly approximation because start.ng's documented identity reply does not include a 3D character model or a garment-cut choice.
 - Identity refresh is attached to focus and visible-tab events.
-- Live start.ng behavior has not yet been verified. The connect page does not respond to local file or localhost pages; identity and sign-in must be tested on the actual `*.start.ng` game address.
-- The project has not been published.
+- The published integration was exercised by the player, who reported that the avatar still looked too robot-like. This revised model is local only and has not been committed or deployed. Identity and appearance can only be verified on the actual `*.start.ng` game address.
+- The game and repository already have a published version. This working-tree revision awaits review and approval before deployment.
 
 ## Remaining steps
 
-1. Once published on a `*.start.ng` address, verify signed-in player identity, guest appearance, sign-in return, and identity refresh after focus/visibility changes.
-2. Add a suitable cover image and verify the repo respects file and type limits.
-3. Push the ready-to-play project to a public GitHub repo. Call `POST https://api.start.ng/games/check` with the repo details, fix errors, and review warnings.
-4. Publish with `POST https://api.start.ng/games/publish`. For a first-time unsigned publish, open the returned one-time `approve_url` within its 30-day validity and approve the game. Later updates normally publish from pushes to the linked branch; use the documented API when an immediate update is needed.
+1. After review and approval, deploy this revised model through the existing publishing setup.
+2. Verify signed-in and guest appearances, sign-in return, and identity refresh after focus/visibility changes on the published game.
