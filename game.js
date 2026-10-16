@@ -191,62 +191,77 @@
     const bodyGroup = new THREE.Group();
     bodyGroup.name = 'character-body';
     bodyGroup.position.y = 0.72;
-    const shoulderWidth = style.body === 'male' ? 1.1 : 0.94;
-    addCharacterMesh(bodyGroup, new THREE.CylinderGeometry(0.3, 0.34, 0.55, 12), shirtMaterial, [0, 0, 0], [shoulderWidth, 1, 1]);
+    // The documented style has body presentation and clothing colors, but no
+    // separate skirt/trouser field. Keep trousers for both silhouettes so the
+    // supplied secondary clothing color is represented consistently.
+    const isFemalePresentation = style.body === 'female';
+    const shoulderRadius = isFemalePresentation ? 0.31 : 0.37;
+    const waistRadius = isFemalePresentation ? 0.25 : 0.29;
+    const hipRadius = isFemalePresentation ? 0.32 : 0.30;
+    addCharacterMesh(bodyGroup, new THREE.CylinderGeometry(shoulderRadius, waistRadius, 0.57, 16), shirtMaterial, [0, 0, 0], null);
+    addCharacterMesh(bodyGroup, new THREE.SphereGeometry(hipRadius, 14, 10), lowerMaterial, [0, -0.34, 0], [1, 0.55, 0.8]);
+    addCharacterMesh(bodyGroup, new THREE.CylinderGeometry(0.105, 0.12, 0.13, 12), skinMaterial, [0, 0.36, 0], null);
     [-1, 1].forEach((side) => {
-      const arm = addCharacterMesh(bodyGroup, new THREE.CylinderGeometry(0.105, 0.12, 0.48, 8), shirtMaterial, [side * 0.36, -0.02, 0], null);
+      const arm = addCharacterMesh(bodyGroup, new THREE.CylinderGeometry(0.09, 0.105, 0.43, 10), shirtMaterial, [side * (shoulderRadius + 0.04), -0.035, 0], null);
       arm.rotation.z = side * -0.18;
+      addCharacterMesh(bodyGroup, new THREE.SphereGeometry(0.075, 10, 8), skinMaterial, [side * (shoulderRadius + 0.11), -0.29, 0.015], null);
     });
     appearance.add(bodyGroup);
 
-    const legsMaterial = lowerMaterial;
-    const footMaterial = new THREE.MeshStandardMaterial({ color: style.secondaryColor, roughness: 0.82 });
-    if (style.body === 'female') {
-      addCharacterMesh(appearance, new THREE.CylinderGeometry(0.23, 0.43, 0.36, 12), legsMaterial, [0, 0.43, 0], null);
-      [-0.15, 0.15].forEach((x) => {
-        addCharacterMesh(appearance, new THREE.CylinderGeometry(0.095, 0.1, 0.38, 8), legsMaterial, [x, 0.2, 0], null);
-        addCharacterMesh(appearance, new THREE.BoxGeometry(0.2, 0.13, 0.3), footMaterial, [x, 0.08, 0.04], null);
-      });
-    } else {
-      [-0.15, 0.15].forEach((x) => {
-        addCharacterMesh(appearance, new THREE.CylinderGeometry(0.12, 0.105, 0.55, 8), legsMaterial, [x, 0.34, 0], null);
-        addCharacterMesh(appearance, new THREE.BoxGeometry(0.21, 0.14, 0.31), footMaterial, [x, 0.08, 0.04], null);
-      });
-    }
+    const footMaterial = new THREE.MeshStandardMaterial({ color: 0x263247, roughness: 0.82 });
+    [-0.15, 0.15].forEach((x) => {
+      addCharacterMesh(appearance, new THREE.CylinderGeometry(0.12, 0.105, 0.55, 10), lowerMaterial, [x, 0.34, 0], null);
+      addCharacterMesh(appearance, new THREE.BoxGeometry(0.21, 0.14, 0.31), footMaterial, [x, 0.08, 0.04], null);
+    });
 
-    addCharacterMesh(appearance, new THREE.CylinderGeometry(0.1, 0.11, 0.18, 10), skinMaterial, [0, 1.1, 0], null);
-    addCharacterMesh(appearance, new THREE.SphereGeometry(0.29, 16, 12), skinMaterial, [0, 1.44, 0], null);
+    addCharacterMesh(appearance, new THREE.CylinderGeometry(0.105, 0.12, 0.18, 12), skinMaterial, [0, 1.1, 0], null);
+    const headWidth = isFemalePresentation ? 0.27 : 0.29;
+    addCharacterMesh(appearance, new THREE.SphereGeometry(0.29, 20, 16), skinMaterial, [0, 1.45, 0], [headWidth / 0.29, 1, 0.95]);
 
     const face = new THREE.Group();
     const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x102238, roughness: 0.5 });
     [-0.105, 0.105].forEach((x) => {
-      addCharacterMesh(face, new THREE.SphereGeometry(0.025, 8, 8), eyeMaterial, [x, 1.46, 0.27], null);
+      addCharacterMesh(face, new THREE.SphereGeometry(0.026, 8, 8), eyeMaterial, [x * (headWidth / 0.29), 1.47, 0.265], null);
     });
     appearance.add(face);
 
     addHair(appearance, style.hair, hairMaterial);
     addHat(appearance, style.hat, accessoryMaterial);
     addAccessory(appearance, style.accessory, accessoryMaterial, darkMaterial, skinMaterial);
+    // Increase in-view detail without changing player movement/collision scale.
+    appearance.scale.set(1.12, 1.12, 1.12);
     return appearance;
   }
 
   function addHair(group, hairStyle, material) {
     if (hairStyle === 'bald') return;
-    addCharacterMesh(group, new THREE.SphereGeometry(0.3, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.48), material, [0, 1.54, 0], null);
+    if (hairStyle !== 'afro') {
+      addCharacterMesh(group, new THREE.SphereGeometry(0.3, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.48), material, [0, 1.54, 0], null);
+    }
     if (hairStyle === 'afro') {
       addCharacterMesh(group, new THREE.SphereGeometry(0.34, 12, 10), material, [0, 1.61, 0], null);
-    } else if (hairStyle === 'braids' || hairStyle === 'dreads') {
-      const count = hairStyle === 'braids' ? 2 : 5;
-      for (let index = 0; index < count; index += 1) {
-        const x = hairStyle === 'braids' ? (index === 0 ? -0.23 : 0.23) : -0.24 + index * 0.12;
-        const length = hairStyle === 'braids' ? 0.46 : 0.36 + (index % 2) * 0.09;
-        addCharacterMesh(group, new THREE.CylinderGeometry(0.045, 0.055, length, 6), material, [x, 1.27 - (length - 0.36) * 0.5, -0.01], null);
-      }
+    } else if (hairStyle === 'braids') {
+      [-1, 1].forEach((side) => {
+        for (let segment = 0; segment < 4; segment += 1) {
+          const lock = addCharacterMesh(group, new THREE.SphereGeometry(0.065, 8, 8), material,
+            [side * (0.22 + segment * 0.012), 1.36 - segment * 0.13, 0.015], [0.82, 1.35, 0.9]);
+          lock.rotation.z = side * -0.12;
+        }
+      });
     } else if (hairStyle === 'bun') {
-      addCharacterMesh(group, new THREE.SphereGeometry(0.14, 10, 8), material, [0, 1.55, -0.27], null);
+      addCharacterMesh(group, new THREE.SphereGeometry(0.17, 12, 10), material, [0, 1.68, -0.19], [1, 0.9, 1]);
     } else if (hairStyle === 'ponytail') {
       addCharacterMesh(group, new THREE.SphereGeometry(0.11, 10, 8), material, [0, 1.48, -0.27], null);
-      addCharacterMesh(group, new THREE.CylinderGeometry(0.07, 0.045, 0.42, 8), material, [0, 1.19, -0.32], null);
+      const tail = addCharacterMesh(group, new THREE.CylinderGeometry(0.075, 0.045, 0.48, 8), material, [0, 1.18, -0.34], null);
+      tail.rotation.x = -0.18;
+    } else if (hairStyle === 'dreads') {
+      for (let index = 0; index < 7; index += 1) {
+        const x = -0.25 + index * (0.5 / 6);
+        const length = 0.42 + (index % 3) * 0.07;
+        const lock = addCharacterMesh(group, new THREE.CylinderGeometry(0.045, 0.055, length, 7), material,
+          [x, 1.29 - (length - 0.42) * 0.5, -0.08], null);
+        lock.rotation.z = x * 0.28;
+      }
     }
   }
 

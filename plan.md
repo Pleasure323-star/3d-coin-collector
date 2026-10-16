@@ -24,7 +24,7 @@ Build a simple 3D coin collection browser game for an individual assignment, the
 - The published project must be in a public GitHub repository. Do not include secrets.
 - File limits: at most 2,000 files, 100 MB total, and 25 MB per file. Hidden files/folders, `node_modules`, and links are excluded. Unsupported file types are skipped.
 - Every game must identify the start.ng player. The connect page uses `postMessage` with origin validation; alternatively, the HTTP API requires a start.ng game session. This project uses the documented connect page method.
-- Every game must show the player's start.ng character. This game maps the documented `style` fields (body, clothing colors, hair, hat, and accessory) onto the 3D character, with sensible fallbacks for missing or unknown fields.
+- Every game must show the player's start.ng character. This game maps the documented `style` fields (body, clothing colors, skin and hair colors, hairstyle, hat, and accessory) onto a procedural low-poly 3D character, with sensible fallbacks for missing or unknown fields. The documentation provides these appearance settings and a face image, not a downloadable 3D model. The game therefore adapts the settings into its own recognizable model; it cannot reproduce start.ng's exact avatar mesh or artwork. The schema does not specify a skirt/trouser choice, so the game uses trousers for both body presentations.
 - Guests use the `guest` appearance returned by start.ng and must have a sign-in option. Refresh identity when the tab becomes visible or focused.
 - The connect page at `https://start.ng/connect` only answers games served from a `*.start.ng` address. Local runs therefore show a clearly labeled local preview and cannot verify start.ng identity.
 - Leaderboards are optional. This game will not add a leaderboard or custom stats schema.
@@ -42,7 +42,8 @@ Build a simple 3D coin collection browser game for an individual assignment, the
 
 - Core game implemented and reported tested successfully in Chrome: keyboard movement, coin collection, score, completion, restart, and responsive rendering.
 - start.ng identity integration implemented using the documented hidden iframe and `startng:whoami` message. Message replies are checked against both `https://start.ng` origin and the connect iframe's `contentWindow`, and must match the requested reply type and request ID.
-- Signed-in player and guest styles are mapped onto the in-game character. Guests see a sign-in button using the documented return URL format.
+- Signed-in player and guest styles are mapped onto a more detailed in-game character with distinct body presentation proportions, visible skin-tone hands/face, colored clothing, and differentiated documented hairstyles. Guests see a sign-in button using the documented return URL format.
+- Appearance still uses an original low-poly approximation because start.ng's documented identity reply does not include a 3D character model or a garment-cut choice.
 - Identity refresh is attached to focus and visible-tab events.
 - Live start.ng behavior has not yet been verified. The connect page does not respond to local file or localhost pages; identity and sign-in must be tested on the actual `*.start.ng` game address.
 - The project has not been published.
